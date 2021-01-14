@@ -1,6 +1,6 @@
-title: no style, please! # name of the site
-author: Riccardo Graziosi # name of site's author
-email: riccardo.graziosi97@gmail.com # email of site's author
+title: peten's blog # name of the site
+author: peten # name of site's author
+email: peten486@gmail.com # email of site's author
 url: https://peten486.github.io # root address of the site
 baseurl: "/no-style-please" # subpath of the site, e.g. "/blog"
 description: > # description of the site (multiple lines allowed)
