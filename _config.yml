@@ -1,33 +1,27 @@
-# This is an example of what an '_config.yml' file should look like
-# when using jekyll-shell-theme. You should use this as a guide or
-# just copy+paste it and modify some of the content to begin with.
+title: no style, please! # name of the site
+author: Riccardo Graziosi # name of site's author
+email: riccardo.graziosi97@gmail.com # email of site's author
+url: https://peten486.github.io # root address of the site
+baseurl: "/no-style-please" # subpath of the site, e.g. "/blog"
+description: > # description of the site (multiple lines allowed)
+  A (nearly) no-CSS, fast, minimalist Jekyll theme.
 
-title: Page Title
-email: email@domain.xyz
-description: >- # this means to ignore newlines until "baseurl:"
-  A paragraph describing your webpage.
-baseurl: "/blog" # the subpath of your site
-url: "https://peten486.github.io" # the base hostname & protocol for your site
-twitter_username: tareqdandachi
-github_username:  tareqdandachi
+permalink: /:slug.html
 
-# Required plugins for the theme to work properly
-plugins:
-  - jekyll-remote-theme
-  - jemoji
+favicon: "logo.png" # name+extension of favicon (which must be put on the root folder)
+# goat_counter: "yoursitename" # put your GoatCounter name if you want to use GoatCounter analytics
 
-# Including jekyll-shell-theme using the jekyll-remote-theme plugin
-remote_theme: tareqdandachi/jekyll-shell-theme
+theme: no-style-please # if you are using GitHub Pages, change it to remote_theme: riggraz/no-style-please
+
+theme_config:
+  appearance: "auto" # can be "light", "dark" or "auto"
+  back_home_text: ".." # customize text for homepage link in post layout
+  date_format: "%Y-%m-%d" # customize how date is formatted
+  show_description: false # show blog description in home page
 
 sass:
-  style: compressed
+  style: :compressed
 
-highlighter: rouge #selecting the highlighter, default is rouge
-
-header_pages:
-  - index.md
-  - about.md
-  - a-third-page.md
-
-# controls how big the shell and font looks
-font-size: small # options: [small] or [large]
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
