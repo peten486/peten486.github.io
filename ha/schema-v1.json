@@ -1,13 +1,159 @@
 {
   "schema_version": 1,
+  "schema_variant": "full",
+  "updated_at": "2026-04-21T00:00:00Z",
   "min_app_version": "1.0.0",
-  "last_updated": "2026-04-21",
-  "embed_html": {
-    "username_marker": "\"username\":\"",
-    "carousel_root_marker": "edge_sidecar_to_children",
-    "video_url_key": "video_url"
+  "notes": "Complete export of hardcoded parser values. Fields prefixed with _ are docs-only (logic, not remoteable).",
+  "url": {
+    "canonical_host": "www.instagram.com",
+    "legacy_hosts": [
+      "instagram.com",
+      "www.instagram.com"
+    ],
+    "post_path_patterns": [
+      "/p/",
+      "/reel/",
+      "/stories/"
+    ],
+    "trailing_slash_paths": [
+      "/p/",
+      "/reel/"
+    ],
+    "embed_suffix": "embed/",
+    "strip_query": true,
+    "query_param_blacklist": [
+      "igsh",
+      "utm_source",
+      "utm_medium",
+      "utm_campaign"
+    ],
+    "cdn_host_validation": "scontent",
+    "lookaside_cdn_marker": "lookaside",
+    "_normalization_rules": {
+      "trim_whitespace": true,
+      "lowercase_host": true,
+      "replace_bare_instagram_host": "instagram.com → www.instagram.com",
+      "auto_prepend_scheme": "https://"
+    }
   },
   "private_api": {
-    "endpoint_template": "/api/v1/media/{media_id}/info/"
-  }
+    "enabled": true,
+    "endpoint_template": "https://i.instagram.com/api/v1/media/{media_id}/info/",
+    "ig_app_id": "936619743392459",
+    "required_headers": {
+      "X-IG-App-ID": "936619743392459",
+      "User-Agent": "Instagram 219.0.0.12.117 Android",
+      "Accept": "*/*",
+      "Accept-Language": "en-US",
+      "X-Requested-With": "XMLHttpRequest"
+    },
+    "web_json_api_suffix": "?__a=1&__d=dis",
+    "response_paths": {
+      "username": "items[0].user.username",
+      "caption": "items[0].caption.text",
+      "video_url": "items[0].video_versions[0].url",
+      "image_url": "items[0].image_versions2.candidates[0].url",
+      "carousel_children": "items[0].carousel_media",
+      "child_media_type_key": "media_type",
+      "child_media_type_video": 2,
+      "child_media_type_image": 1,
+      "child_video_url": "video_versions[0].url",
+      "child_image_url": "image_versions2.candidates[0].url",
+      "taken_at": "items[0].taken_at",
+      "hashtag_mention_source": "items[0].caption.text"
+    },
+    "shortcode_to_media_id": {
+      "_algorithm": "base64-url to int64",
+      "_alphabet": "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"
+    }
+  },
+  "embed_html": {
+    "username_marker": "\"username\":\"",
+    "username_terminator": "\"",
+    "carousel_root_marker": "edge_sidecar_to_children",
+    "is_video_patterns": [
+      "is_video\\\\\":true",
+      "is_video\\\":true",
+      "is_video\":true"
+    ],
+    "video_url_key": "video_url",
+    "display_url_key": "display_url",
+    "display_resources_key": "display_resources",
+    "resource_src_key": "src\\",
+    "caption_root_marker": "edge_media_to_caption",
+    "caption_text_key": "text",
+    "single_image_sources": [
+      {
+        "marker": "EmbeddedMediaImage",
+        "attribute": "src",
+        "quote": "\""
+      },
+      {
+        "marker": "og:image",
+        "attribute": "content",
+        "quote": "\""
+      }
+    ],
+    "og_image_tag_marker": "og:image",
+    "url_scheme_marker": "https",
+    "_json_value_extraction": {
+      "url_boundary": "\"",
+      "escaped_url_boundary": "\\\"",
+      "forward_slash_escape": "\\/",
+      "unicode_escape_prefix": "\\u"
+    },
+    "_html_entity_decode": {
+      "&amp;": "&",
+      "&lt;": "<",
+      "&gt;": ">",
+      "&quot;": "\""
+    },
+    "_caption_boundary_rules": {
+      "skip_escaped_quote_pairs": true,
+      "terminator_pattern": "non-escaped quote",
+      "max_scan_window": 5000
+    },
+    "_carousel_edges_stop": "second 'edges' occurrence"
+  },
+  "regex": {
+    "hashtag": "#([\\w가-힣ぁ-んァ-ヶ一-龠]+)",
+    "mention": "@([\\w.]+)",
+    "instagram_shortcode": "/(p|reel|tv|stories)/([A-Za-z0-9_\\-]+)"
+  },
+  "fallback_order": [
+    "private_api",
+    "web_json_api",
+    "embed_html"
+  ],
+  "fallback_rules": {
+    "private_api_to_web_json_on": [
+      "401",
+      "403",
+      "login_required"
+    ],
+    "web_json_to_embed_on": [
+      "empty_media",
+      "parse_error"
+    ],
+    "embed_final": true
+  },
+  "limits": {
+    "carousel_search_window": 100000,
+    "node_context_back": 200,
+    "node_search_window": 3000,
+    "src_search_window": 1500,
+    "drange_search_window": 2000,
+    "caption_max_scan": 5000,
+    "username_max_length": 200,
+    "filename_fallback": "image.jpg",
+    "request_timeout_sec": 30
+  },
+  "_logic_only_fields": [
+    "url._normalization_rules",
+    "private_api.shortcode_to_media_id",
+    "embed_html._json_value_extraction",
+    "embed_html._html_entity_decode",
+    "embed_html._caption_boundary_rules",
+    "embed_html._carousel_edges_stop"
+  ]
 }
