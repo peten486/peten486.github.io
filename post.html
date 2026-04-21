@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Peten's Blog</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/github.min.css">
+  <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <a href="./" class="site-title">Peten's Blog</a>
+      <p class="site-tagline">생각과 기록</p>
+    </div>
+  </header>
+
+  <main class="container">
+    <a href="./" class="back-link">← 목록으로</a>
+    <article id="post" class="post" aria-busy="true">
+      <p class="loading">포스트를 불러오는 중…</p>
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>© <span id="year"></span> Peten</p>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    const params = new URLSearchParams(location.search);
+    const slug = params.get('slug');
+    const postEl = document.getElementById('post');
+
+    if (!slug) {
+      postEl.innerHTML = '<p class="empty">잘못된 접근입니다.</p>';
+    } else {
+      Promise.all([
+        fetch('posts.json', { cache: 'no-cache' }).then(r => r.json()),
+        fetch(`posts/${encodeURIComponent(slug)}.md`, { cache: 'no-cache' }).then(r => {
+          if (!r.ok) throw new Error('포스트를 찾을 수 없습니다');
+          return r.text();
+        })
+      ])
+      .then(([meta, md]) => {
+        const post = (meta.posts || []).find(p => p.slug === slug);
+        const title = post ? post.title : slug;
+        const date = post ? formatDate(post.date) : '';
+        document.title = `${title} — Peten's Blog`;
+
+        marked.setOptions({
+          highlight: (code, lang) => {
+            if (lang && hljs.getLanguage(lang)) {
+              return hljs.highlight(code, { language: lang }).value;
+            }
+            return hljs.highlightAuto(code).value;
+          },
+          breaks: true,
+          gfm: true
+        });
+
+        postEl.removeAttribute('aria-busy');
+        postEl.innerHTML = `
+          <header class="post-header">
+            <h1>${escapeHtml(title)}</h1>
+            ${date ? `<time class="post-date">${date}</time>` : ''}
+            ${post && post.tags && post.tags.length ? `<div class="post-tags">${post.tags.map(t => `<span class="tag">#${escapeHtml(t)}</span>`).join('')}</div>` : ''}
+          </header>
+          <div class="post-content">${marked.parse(md)}</div>
+        `;
+      })
+      .catch(err => {
+        postEl.removeAttribute('aria-busy');
+        postEl.innerHTML = `<p class="empty">포스트를 불러올 수 없습니다.<br><small>${escapeHtml(err.message)}</small></p>`;
+      });
+    }
+
+    function formatDate(iso) {
+      const d = new Date(iso);
+      if (isNaN(d)) return iso;
+      return d.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
+    }
+
+    function escapeHtml(s) {
+      return String(s).replace(/[&<>"']/g, c => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      }[c]));
+    }
+  </script>
+</body>
+</html>
