@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "min_app_version": "1.0.0",
+  "last_updated": "2026-04-21",
+  "embed_html": {
+    "username_marker": "\"username\":\"",
+    "carousel_root_marker": "edge_sidecar_to_children",
+    "video_url_key": "video_url"
+  },
+  "private_api": {
+    "endpoint_template": "/api/v1/media/{media_id}/info/"
+  }
+}

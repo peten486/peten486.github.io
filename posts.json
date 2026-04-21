@@ -1,6 +1,13 @@
 {
   "posts": [
     {
+      "slug": "ha-schema-changelog",
+      "title": "hasharchive Schema Changelog",
+      "date": "2026-04-21",
+      "summary": "hasharchive 앱의 원격 파싱 스키마 변경 이력과 운영 원칙.",
+      "tags": ["hasharchive", "schema", "changelog"]
+    },
+    {
       "slug": "hello-world",
       "title": "블로그를 시작합니다",
       "date": "2026-04-21",
